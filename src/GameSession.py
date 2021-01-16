@@ -1,5 +1,6 @@
 from src.Utility import *
 from enum import Enum
+import json
 
 
 class GameSession:
@@ -31,6 +32,28 @@ class GameSession:
         if self.answer_field.cells[row][column] != digit:
             self.count_mistakes += 1
             return MovingResult.fail
+
+    def save_session(self, filename):
+        with open('saves/' + filename + ".pkl", "w") as write_file:
+            data = {'grid': self.field.cells,
+                    'answer_grid': self.answer_field.cells,
+                    'empty_cells': self.empty_cells,
+                    'count_mistakes': self.count_mistakes}
+            json.dump(data, write_file)
+
+    def load_session(self, filename):
+        if os.path.isfile('saves/' + filename + ".pkl"):
+            with open('saves/' + filename + ".pkl", "r") as read_file:
+                data = json.load(read_file)
+                self.field.cells = data['grid']
+                self.answer_field.cells = data['answer_grid']
+                self.empty_cells = data['empty_cells']
+                self.count_mistakes = data['count_mistakes']
+                return True
+        else:
+            print('No such file')
+            return False
+
 
 class MovingResult(Enum):
     already_filled = 1
