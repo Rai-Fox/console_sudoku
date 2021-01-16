@@ -31,7 +31,7 @@ def __swap_blocks(grid):
 __random_functions = [__transpose, __swap_blocks, __swap_rows]
 
 def generate_field(num_missed):
-    n_iters = 100
+    n_iters = 1000
     grid = __generate_initial_grid()
     for i in range(n_iters):
         __random_functions[random.randint(0, 2)](grid)

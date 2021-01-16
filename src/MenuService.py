@@ -4,6 +4,12 @@ class MainMenuOption(Enum):
     new_game = 1
     exit = 2
 
+class InGameMenuOption(Enum):
+    make_move = 1
+    #save_session = 2
+    exit_to_main_menu = 2
+
+
 def print_main_menu():
     print("-----------Main menu-----------")
     print("Enter number of option:")
@@ -31,3 +37,30 @@ def get_starting_game_input():
     except BaseException:
         print("Error! A number from 0 to 80 expected")
         return None
+
+def print_ingame_menu():
+    print("-----------In-game menu-----------")
+    print("Enter number of option:")
+    for option in InGameMenuOption:
+        print(f'{option.value}) {option.name}')
+
+def get_ingame_menu_input():
+    try:
+        return InGameMenuOption(int(input()))
+    except BaseException:
+        print("Error! Please, enter one of the options")
+        return None
+
+def print_making_move_menu():
+    print("Please, enter three numbers by spaces: [row] [column] [the number you want to insert]")
+
+def get_making_move_input():
+    try:
+        row, column, digit = map(int, input().split())
+        if row is None or column is None or digit is None or \
+                row < 1 or row > 9 or column < 1 or column > 9 or digit < 1 or digit > 9:
+            raise BaseException()
+        return row, column, digit
+    except BaseException:
+        print("Error! Please, enter three numbers by spaces")
+        return None, None, None

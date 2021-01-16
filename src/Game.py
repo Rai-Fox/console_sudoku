@@ -1,25 +1,34 @@
-from src.Utility import *
 from src.MenuService import *
+from src.GameSession import *
+
+
+class GameState(Enum):
+    idling = 1
+    starting_game = 2
+    running = 3
+    exiting = 4
+    making_move = 5
+
 
 class Game:
+    handlers = {GameState.idling: 'self.main_menu_handler',
+                GameState.starting_game: 'self.starting_game_handler',
+                GameState.running: 'self.ingame_menu_handler',
+                GameState.making_move: 'self.making_move_handler'}
+
     def __init__(self, player):
-        self.__state = GameState.idle
+        self.__state = GameState.idling
         self.__player = player
-        self.__field = None
-        self.__answer_field = None
+        self.__game_session = GameSession()
 
     def run_game(self):
         while True:
             if self.__state is GameState.exiting:
                 return
+            if self.__state in Game.handlers:
+                eval(Game.handlers[self.__state])()
 
-            while self.__state == GameState.idle:
-                self.__main_menu_handler()
-
-            while self.__state == GameState.starting_game:
-                self.__starting_game_handler()
-
-    def __main_menu_handler(self):
+    def main_menu_handler(self):
         print_main_menu()
         option = get_main_menu_input()
         if option is None:
@@ -30,17 +39,27 @@ class Game:
         if option is MainMenuOption.new_game:
             self.__state = GameState.starting_game
 
-    def __starting_game_handler(self):
+    def starting_game_handler(self):
         print_starting_game_menu()
         number_hints = get_starting_game_input()
         if number_hints is None:
             return
-        self.__field, self.__answer_field = generate_field(Field.SIZE * Field.SIZE - number_hints)
+        self.__game_session.create_new_session(number_hints)
         self.__state = GameState.running
 
+    def ingame_menu_handler(self):
+        print_ingame_menu()
+        option = get_ingame_menu_input()
+        if option is None:
+            return
+        if option is InGameMenuOption.exit_to_main_menu:
+            self.__state = GameState.idling
+            return
+        if option is InGameMenuOption.make_move:
+            self.__state = GameState.making_move
 
-class GameState(Enum):
-    idle = 1
-    starting_game = 2
-    running = 3
-    exiting = 4
+    def making_move_handler(self):
+        print_making_move_menu()
+        row, column, digit = get_making_move_input()
+        if row is not None:
+            self.__state = GameState.running
