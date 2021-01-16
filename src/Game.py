@@ -48,6 +48,7 @@ class Game:
         self.__state = GameState.running
 
     def ingame_menu_handler(self):
+        self.__game_session.print_information()
         print_ingame_menu()
         option = get_ingame_menu_input()
         if option is None:
@@ -61,5 +62,11 @@ class Game:
     def making_move_handler(self):
         print_making_move_menu()
         row, column, digit = get_making_move_input()
+        self.__state = GameState.running
         if row is not None:
-            self.__state = GameState.running
+            result = self.__game_session.try_move(row, column, digit)
+            print_moving_result(result)
+            if result == MovingResult.win:
+                self.__game_session.field.print()
+                self.__state = GameState.idling
+
