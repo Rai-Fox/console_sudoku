@@ -1,7 +1,7 @@
 from src.Field import Field
 import copy
 import random
-
+import os
 
 def __generate_initial_grid():
     initial_grid = [[i for i in range(1, Field.SIZE + 1)] for _ in range(Field.SIZE)]
@@ -40,7 +40,11 @@ def generate_field(num_missed):
         grid[miss // Field.SIZE][miss % Field.SIZE] = '.'
     return Field(grid), Field(answer)
 
-
+def clear_console(system):
+    if system == 'win32':
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 

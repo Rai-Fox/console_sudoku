@@ -1,5 +1,7 @@
 from enum import Enum
 from src.GameSession import MovingResult
+import os
+
 
 class MainMenuOption(Enum):
     new_game = 1
@@ -23,6 +25,7 @@ def get_main_menu_input():
         return MainMenuOption(int(input()))
     except BaseException:
         print("Error! Please enter one of the options")
+        os.system('pause')
         return None
 
 def print_starting_game_menu():
@@ -37,6 +40,7 @@ def get_starting_game_input():
         return number_hints
     except BaseException:
         print("Error! A number from 0 to 80 expected")
+        os.system('pause')
         return None
 
 def print_ingame_menu():
@@ -50,6 +54,7 @@ def get_ingame_menu_input():
         return InGameMenuOption(int(input()))
     except BaseException:
         print("Error! Please, enter one of the options")
+        os.system('pause')
         return None
 
 def print_making_move_menu():
@@ -64,6 +69,7 @@ def get_making_move_input():
         return row - 1, column - 1, digit
     except BaseException:
         print("Error! Please, enter three numbers by spaces")
+        os.system('pause')
         return None, None, None
 
 def print_moving_result(result):
@@ -75,3 +81,4 @@ def print_moving_result(result):
         print("Error! This cell is already filled")
     elif result == MovingResult.win:
         print("Congratulations, you successfully solved this")
+    os.system('pause')

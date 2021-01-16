@@ -16,13 +16,15 @@ class Game:
                 GameState.running: 'self.ingame_menu_handler',
                 GameState.making_move: 'self.making_move_handler'}
 
-    def __init__(self, player):
+    def __init__(self, system, player):
         self.__state = GameState.idling
         self.__player = player
         self.__game_session = GameSession()
+        self.__system = system
 
     def run_game(self):
         while True:
+            clear_console(self.__system)
             if self.__state is GameState.exiting:
                 return
             if self.__state in Game.handlers:
@@ -60,6 +62,7 @@ class Game:
             self.__state = GameState.making_move
 
     def making_move_handler(self):
+        self.__game_session.print_information()
         print_making_move_menu()
         row, column, digit = get_making_move_input()
         self.__state = GameState.running
