@@ -1,18 +1,46 @@
-from enum import Enum
-from src.FieldGenerator import generate_field
+from src.Utility import *
+from src.MenuService import *
 
 class Game:
     def __init__(self, player):
-        self.state = State.idle
-        self.player = player
-        self.field = None
-        self.answer_field = None
+        self.__state = GameState.idle
+        self.__player = player
+        self.__field = None
+        self.__answer_field = None
 
     def run_game(self):
-        self.field, self.answer_field = generate_field(81-55)
-        self.field.print()
+        while True:
+            if self.__state is GameState.exiting:
+                return
 
-class State(Enum):
+            while self.__state == GameState.idle:
+                self.__main_menu_handler()
+
+            while self.__state == GameState.starting_game:
+                self.__starting_game_handler()
+
+    def __main_menu_handler(self):
+        print_main_menu()
+        option = get_main_menu_input()
+        if option is None:
+            return
+        if option is MainMenuOption.exit:
+            self.__state = GameState.exiting
+            return
+        if option is MainMenuOption.new_game:
+            self.__state = GameState.starting_game
+
+    def __starting_game_handler(self):
+        print_starting_game_menu()
+        number_hints = get_starting_game_input()
+        if number_hints is None:
+            return
+        self.__field, self.__answer_field = generate_field(Field.SIZE * Field.SIZE - number_hints)
+        self.__state = GameState.running
+
+
+class GameState(Enum):
     idle = 1
-    running = 2
-    game_over = 3
+    starting_game = 2
+    running = 3
+    exiting = 4
