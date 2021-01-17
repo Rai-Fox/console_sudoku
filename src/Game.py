@@ -12,7 +12,6 @@ class GameState(Enum):
     uploading_session = 7
 
 
-
 class Game:
     handlers = {GameState.idling: 'self.main_menu_handler',
                 GameState.starting_game: 'self.starting_game_handler',
@@ -21,17 +20,16 @@ class Game:
                 GameState.uploading_session: 'self.uploading_session_handler',
                 GameState.saving_session: 'self.saving_session_handler'}
 
-    def __init__(self, system, player):
+    def __init__(self, player):
         self.__state = GameState.idling
         self.__player = player
         self.__game_session = GameSession()
-        self.__system = system
         if not os.path.isdir("saves"):
             os.mkdir("saves")
 
     def run_game(self):
         while True:
-            clear_console(self.__system)
+            clear_console()
             if self.__state is GameState.exiting:
                 return
             if self.__state in Game.handlers:
@@ -79,7 +77,7 @@ class Game:
     def making_move_handler(self):
         self.__game_session.print_information()
         print_making_move_menu()
-        row, column, digit = get_making_move_input()
+        row, column, digit = self.__player.make_move(self.__game_session.field)
         self.__state = GameState.running
         if row is not None:
             result = self.__game_session.try_move(row, column, digit)

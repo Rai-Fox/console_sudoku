@@ -5,8 +5,8 @@ import json
 
 class GameSession:
     def __init__(self):
-        self.field = None
-        self.answer_field = None
+        self.field = Field()
+        self.answer_field = Field()
         self.empty_cells = 0
         self.count_mistakes = 0
 
